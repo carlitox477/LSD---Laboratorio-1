@@ -1,8 +1,18 @@
+import { fork } from "child_process"
 import * as net from "net"
 import { AddressInfo, Socket } from "net"
-import {getWeather, WeatherRequest} from './weather'
 
 const PORT=4001
+
+const createRequestHandlerProcess =(request: string, socket: Socket)=>{
+    const childProcess=fork("./requestChildProcess.ts",[request])
+    childProcess.on("message",(data)=>{
+        socket.write(data as string)
+    })
+    childProcess.on("exit",()=>{
+        console.log("Child process ended")
+    })
+}
 
 //Allows to manage multiple TCP connections
 const server=net.createServer()
@@ -16,22 +26,7 @@ server.on('connection', (socket: Socket)=>{
     socket.on('data',(data: Buffer)=>{
         //It should recive a JSON with a date
         console.log(`[WEATHER SERVER] Request recived`)
-
-        const weatherRequest: WeatherRequest=JSON.parse(data.toString()) as WeatherRequest
-        
-        const weather=getWeather(weatherRequest.date)
-        const response={
-            type: "RESPONSE",
-            requestId: weatherRequest.requestId,
-            weather: weather
-        }
-        socket.write(JSON.stringify(response),(err)=>{
-            if(err){
-                console.log(`Error sending ${JSON.stringify(response)}`)
-            }else{
-                console.log(`Success sending ${JSON.stringify(response)}`)
-            }
-        })
+        createRequestHandlerProcess(data.toString(),socket)
     })
     socket.on('close',()=>{
         const address=socket.address() as AddressInfo

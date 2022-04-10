@@ -1,5 +1,5 @@
 import * as jest from "jest"
-import { getHoroscopeForZodiacalSignAndDate,HoroscopeRequest,zodiacal_signs } from "../Services/horoscope-api/horoscope"
+import { getHoroscopeForZodiacalSignAndDate,zodiacal_signs } from "../Services/horoscope-api/horoscope"
 import { getWeather } from "../Services/weather-api/weather"
 import { getTwoDatesFromToday } from "./utils"
 
