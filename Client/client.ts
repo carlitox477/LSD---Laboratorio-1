@@ -1,5 +1,5 @@
 import * as net from "net"
-import { AddressInfo, Socket } from "net"
+import { AddressInfo } from "net"
 import { SocketMessage } from "../interfaces/request";
 import { HoroscopeMainServerResponse } from "../Server/horoscope-service-handler";
 import { WeatherMainServerResponse } from "../Server/weather-service-handler";
